@@ -1,8 +1,13 @@
 {
-  "name": "randomx-checker-nodejs",
+  "name": "randomx-etica-nodejs",
   "version": "1.0.0",
   "description": "Enables to call RandomX from a nodejs environmement",
-  "main": "./build/Release/randomx_addon.node",
+  "main": "index.js",
+  "files": [
+    "index.js",
+    "randomx.js",
+    "build/Release/randomx_addon.node"
+  ],
   "scripts": {
     "build": "node-gyp rebuild --verbose",
     "install": "node-gyp rebuild"
