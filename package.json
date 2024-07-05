@@ -6,7 +6,11 @@
   "files": [
     "index.js",
     "randomx.js",
-    "build/Release/randomx_addon.node"
+    "build/Release/randomx_addon.node",
+    "randomx.js",
+    "binding.gyp",
+    "randomx_node.cpp",
+    "src/**/*"
   ],
   "scripts": {
     "build": "node-gyp rebuild --verbose",
