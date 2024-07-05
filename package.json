@@ -1,0 +1,21 @@
+{
+  "name": "randomx-checker-nodejs",
+  "version": "1.0.0",
+  "description": "Enables to call RandomX from a nodejs environmement",
+  "main": "./build/Release/randomx_addon.node",
+  "scripts": {
+    "build": "node-gyp rebuild --verbose",
+    "install": "node-gyp rebuild"
+  },
+  "dependencies": {
+    "bignumber.js": "^4.0.4",
+    "node-addon-api": "^3.0.0"
+  },
+  "devDependencies": {
+    "node-gyp": "^7.1.0"
+  },
+  "keywords": [],
+  "author": "Etica",
+  "license": "ISC",
+  "gypfile": true
+}

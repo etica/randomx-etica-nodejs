@@ -1,0 +1,1 @@
+cmd_Release/randomx_addon.node := ln -f "Release/obj.target/randomx_addon.node" "Release/randomx_addon.node" 2>/dev/null || (rm -rf "Release/randomx_addon.node" && cp -af "Release/obj.target/randomx_addon.node" "Release/randomx_addon.node")
