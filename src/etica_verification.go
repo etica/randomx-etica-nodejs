@@ -17,6 +17,8 @@ import (
 	"unsafe"
 )
 
+const nonceOffset = 39
+
 // CheckSolution verifies a mining solution using RandomX
 
 // VerifyEticaRandomXNonce verifies a mining solution using RandomX
@@ -24,7 +26,8 @@ import (
 //export VerifyEticaRandomXNonce
 func VerifyEticaRandomXNonce(blockHeader *C.uchar, blockHeaderLength C.size_t,
 	nonce *C.uchar, nonceLength C.size_t,
-	target *C.uchar, targetLength C.size_t) C.bool {
+	target *C.uchar, targetLength C.size_t,
+	seedHash *C.uchar, seedHashLength C.size_t) C.bool {
 
 	fmt.Println("*-*-*-*-**-*-*-*-*-*-Verifying with VerifyEticaRandomXNonce *-*-*-*-*-**-*-*-*-*-*-*-*-*-")
 
@@ -32,10 +35,22 @@ func VerifyEticaRandomXNonce(blockHeader *C.uchar, blockHeaderLength C.size_t,
 	goBlockHeader := C.GoBytes(unsafe.Pointer(blockHeader), C.int(blockHeaderLength))
 	goNonce := C.GoBytes(unsafe.Pointer(nonce), C.int(nonceLength))
 	goTarget := C.GoBytes(unsafe.Pointer(target), C.int(targetLength))
+	goSeedHash := C.GoBytes(unsafe.Pointer(seedHash), C.int(seedHashLength))
 
 	fmt.Printf("Block Header (hex): %s\n", hex.EncodeToString(goBlockHeader))
 	fmt.Printf("Nonce (hex): %s\n", hex.EncodeToString(goNonce))
 	fmt.Printf("Target (hex): %s\n", hex.EncodeToString(goTarget))
+
+	fmt.Printf("Seed Hash (hex): %s\n", hex.EncodeToString(goSeedHash))
+
+	// Create a copy of the block header and insert the nonce at the correct offset
+	blobWithNonce := make([]byte, len(goBlockHeader))
+	copy(blobWithNonce, goBlockHeader)
+	copy(blobWithNonce[nonceOffset:nonceOffset+4], goNonce)
+
+	// Log the original blob and the blob with the new nonce
+	fmt.Printf("Original Blob: %s\n", hex.EncodeToString(goBlockHeader))
+	fmt.Printf("Blob with Nonce: %s\n", hex.EncodeToString(blobWithNonce))
 
 	// Initialize RandomX
 	cache := InitRandomX(FlagDefault)
@@ -52,19 +67,16 @@ func VerifyEticaRandomXNonce(blockHeader *C.uchar, blockHeaderLength C.size_t,
 	}
 	defer DestroyVM(vm)
 
-	input := append(goBlockHeader, goNonce...)
-	fmt.Printf("Input for solution (hex): %s\n", hex.EncodeToString(input))
-
 	const maxInputSize = 1024 * 1024 // 1 MB, adjust as needed
-	if len(input) > maxInputSize {
-		fmt.Printf("Input size too large: %d bytes\n", len(input))
+	if len(blobWithNonce) > maxInputSize {
+		fmt.Printf("Input blobWithNonce size too large: %d bytes\n", len(blobWithNonce))
 		return C.bool(false)
 	}
 
-	correctSolution := CalculateHash(vm, input)
-	fmt.Printf("Calculated solution (hex): %s\n", hex.EncodeToString(correctSolution))
+	calculatedHash := calculateRandomXHash(blobWithNonce, goSeedHash)
+	fmt.Printf("Calculated RandomX Hash (hex): %s\n", hex.EncodeToString(calculatedHash))
 
-	valid, err := CheckSolutionWithTarget(vm, goBlockHeader, goNonce, correctSolution, goTarget)
+	valid, err := CheckSolutionWithTarget(vm, blobWithNonce, calculatedHash, goTarget)
 	if err != nil {
 		fmt.Printf("RandomX verification error: %v\n", err)
 		return C.bool(false)
@@ -79,7 +91,41 @@ func VerifyEticaRandomXNonce(blockHeader *C.uchar, blockHeaderLength C.size_t,
 	}
 }
 
-func CheckSolutionWithTarget(vm unsafe.Pointer, blockHeader []byte, nonce []byte, solution []byte, target []byte) (bool, error) {
+// Function to initialize RandomX cache and VM, and calculate the hash
+func calculateRandomXHash(blobWithNonce, seedHash []byte) []byte {
+	flags := FlagDefault
+	cache := InitRandomX(flags)
+	if cache == nil {
+		panic("Failed to allocate RandomX cache")
+	}
+	defer DestroyRandomX(cache)
+
+	InitCache(cache, seedHash)
+
+	vm := CreateVM(cache, flags)
+	if vm == nil {
+		panic("Failed to create RandomX VM")
+	}
+	defer DestroyVM(vm)
+
+	hash := CalculateHash(vm, blobWithNonce)
+
+	return hash
+}
+
+func CheckSolutionWithTarget(vm unsafe.Pointer, blobWithNonce []byte, calculatedHash []byte, target []byte) (bool, error) {
+	if vm == nil {
+		return false, errors.New("RandomX VM is not initialized")
+	}
+
+	if bytes.Compare(calculatedHash, target) > 0 {
+		return false, errors.New("hash does not meet target difficulty")
+	}
+
+	return true, nil
+}
+
+/* func CheckSolutionWithTarget(vm unsafe.Pointer, blockHeader []byte, nonce []byte, solution []byte, target []byte) (bool, error) {
 	if vm == nil {
 		return false, errors.New("RandomX VM is not initialized")
 	}
@@ -96,7 +142,7 @@ func CheckSolutionWithTarget(vm unsafe.Pointer, blockHeader []byte, nonce []byte
 	}
 
 	return true, nil
-}
+} */
 
 func main() {
 	fmt.Println("Main function called!")

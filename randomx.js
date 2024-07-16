@@ -11,12 +11,20 @@ function InitRandomX(key) {
   return randomxVM;
 }
 
-function VerifyEticaRandomXNonce(blockHeader, nonce, target) {
+function VerifyEticaRandomXNonce(blockHeader, nonce, target, seedHash) {
   const blockHeaderBuffer = Buffer.from(blockHeader, 'hex');
   const nonceBuffer = Buffer.from(nonce, 'hex');
   const targetBuffer = Buffer.from(target, 'hex');
+  const seedHashBuffer = Buffer.from(seedHash, 'hex');
 
-  const result = randomxAddon.VerifyEticaRandomXNonce(blockHeaderBuffer, nonceBuffer, targetBuffer);
+  console.log("Verifying with parameters:");
+  console.log("Block Header:", blockHeader);
+  console.log("Nonce:", nonce);
+  console.log("Target:", target);
+  console.log("Seed Hash:", seedHash);
+
+  const result = randomxAddon.VerifyEticaRandomXNonce(blockHeaderBuffer, nonceBuffer, targetBuffer, seedHashBuffer);
+  console.log("Verification result:", result);
   if(result == true){
     return true;
   }

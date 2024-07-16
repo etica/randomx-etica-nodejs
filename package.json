@@ -1,6 +1,6 @@
 {
   "name": "randomx-etica-nodejs",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Enables to call RandomX from a nodejs environmement",
   "main": "index.js",
   "files": [

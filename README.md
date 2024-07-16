@@ -10,7 +10,7 @@ make
 
 add new functions Process:
 > Implement new function in /src main go package
-> Then add them to randomx_node.cpp following same pattern as initRandomX and CheckSolution
+> Then add them to randomx_node.cpp following same pattern as initRandomX and VerifyEticaRandomXNonce
 
 
 ** Installation** 
@@ -37,5 +37,6 @@ Build the addon:
 
 > cd /src
 > go build -buildmode=c-shared -o librandomx_wrapper.so randomx_wrapper.go etica_verification.go
+> cd ..
 > npm install
 > node example_usage.js

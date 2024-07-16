@@ -18,7 +18,8 @@ extern "C" {
     void* InitRandomX(const unsigned char* key, size_t keyLength);
     bool VerifyEticaRandomXNonce(const unsigned char* blockHeader, size_t blockHeaderLength,
                                  const unsigned char* nonce, size_t nonceLength,
-                                 const unsigned char* target, size_t targetLength);
+                                 const unsigned char* target, size_t targetLength,
+                                 const unsigned char* seedHash, size_t seedHashLength);
 }
 
 void* randomxCache = nullptr;
@@ -55,8 +56,9 @@ void NodeInitRandomX(const FunctionCallbackInfo<Value>& args) {
 void VerifyEticaRandomXNonce(const FunctionCallbackInfo<Value>& args) {
     Isolate* isolate = args.GetIsolate();
 
-    if (args.Length() < 3 || !node::Buffer::HasInstance(args[0]) || 
-        !node::Buffer::HasInstance(args[1]) || !node::Buffer::HasInstance(args[2])) {
+    if (args.Length() < 4 || !node::Buffer::HasInstance(args[0]) || 
+        !node::Buffer::HasInstance(args[1]) || !node::Buffer::HasInstance(args[2]) ||
+        !node::Buffer::HasInstance(args[3])) {
         isolate->ThrowException(Exception::TypeError(
             String::NewFromUtf8(isolate, "Wrong arguments").ToLocalChecked()));
         return;
@@ -74,10 +76,15 @@ void VerifyEticaRandomXNonce(const FunctionCallbackInfo<Value>& args) {
     char* targetData = node::Buffer::Data(targetObj);
     size_t targetLength = node::Buffer::Length(targetObj);
 
+    Local<Object> seedHashObj = args[3]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
+    char* seedHashData = node::Buffer::Data(seedHashObj);
+    size_t seedHashLength = node::Buffer::Length(seedHashObj);
+
     bool result = VerifyEticaRandomXNonce(
         reinterpret_cast<const unsigned char*>(blockHeaderData), blockHeaderLength,
         reinterpret_cast<const unsigned char*>(nonceData), nonceLength,
-        reinterpret_cast<const unsigned char*>(targetData), targetLength);
+        reinterpret_cast<const unsigned char*>(targetData), targetLength,
+        reinterpret_cast<const unsigned char*>(seedHashData), seedHashLength);
 
     args.GetReturnValue().Set(result);
 }

@@ -5,7 +5,7 @@
 
 #line 1 "cgo-builtin-export-prolog"
 
-#include <stddef.h> /* for ptrdiff_t below */
+#include <stddef.h>
 
 #ifndef GO_CGO_EXPORT_PROLOGUE_H
 #define GO_CGO_EXPORT_PROLOGUE_H
@@ -60,11 +60,17 @@ typedef long long GoInt64;
 typedef unsigned long long GoUint64;
 typedef GoInt64 GoInt;
 typedef GoUint64 GoUint;
-typedef __SIZE_TYPE__ GoUintptr;
+typedef size_t GoUintptr;
 typedef float GoFloat32;
 typedef double GoFloat64;
+#ifdef _MSC_VER
+#include <complex.h>
+typedef _Fcomplex GoComplex64;
+typedef _Dcomplex GoComplex128;
+#else
 typedef float _Complex GoComplex64;
 typedef double _Complex GoComplex128;
+#endif
 
 /*
   static assertion to make sure the file is being used on architecture
@@ -88,21 +94,15 @@ typedef struct { void *data; GoInt len; GoInt cap; } GoSlice;
 extern "C" {
 #endif
 
-
-extern void* InitRandomX(GoUint32 p0);
-
-extern void DestroyRandomX(void* p0);
-
-extern GoSlice CalculateHash(void* p0, GoSlice p1);
-
-extern void DestroyVM(void* p0);
-
-extern void DestroyCache(void* p0);
+extern void* InitRandomX(GoUint32 flags);
+extern void DestroyRandomX(void* cache);
+extern GoSlice CalculateHash(void* vm, GoSlice input);
+extern void DestroyVM(void* vm);
+extern void DestroyCache(void* cache);
 
 // VerifyEticaRandomXNonce verifies a mining solution using RandomX
 //
-
-extern _Bool VerifyEticaRandomXNonce(unsigned char* p0, size_t p1, unsigned char* p2, size_t p3, unsigned char* p4, size_t p5);
+extern _Bool VerifyEticaRandomXNonce(unsigned char* blockHeader, size_t blockHeaderLength, unsigned char* nonce, size_t nonceLength, unsigned char* target, size_t targetLength, unsigned char* seedHash, size_t seedHashLength);
 
 #ifdef __cplusplus
 }

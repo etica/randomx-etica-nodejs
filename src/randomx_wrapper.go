@@ -20,6 +20,11 @@ const (
 	FlagDefault RandomXFlags = C.RANDOMX_FLAG_DEFAULT
 )
 
+// InitCache initializes a RandomX cache with the given seed
+func InitCache(cache unsafe.Pointer, seed []byte) {
+	C.randomx_init_cache((*C.struct_randomx_cache)(cache), unsafe.Pointer(&seed[0]), C.size_t(len(seed)))
+}
+
 //export InitRandomX
 func InitRandomX(flags RandomXFlags) unsafe.Pointer {
 	return unsafe.Pointer(C.randomx_alloc_cache(C.randomx_flags(flags)))
