@@ -35,6 +35,7 @@ typedef struct { const char *p; ptrdiff_t n; } _GoString_;
 
 
 
+#include <stdlib.h>
 #include <stdbool.h>
 #include "randomx.h"
 
@@ -102,7 +103,7 @@ extern void DestroyCache(void* cache);
 
 // VerifyEticaRandomXNonce verifies a mining solution using RandomX
 //
-extern _Bool VerifyEticaRandomXNonce(unsigned char* blockHeader, size_t blockHeaderLength, unsigned char* nonce, size_t nonceLength, unsigned char* target, size_t targetLength, unsigned char* seedHash, size_t seedHashLength, unsigned char* seedHash, size_t seedHashLength);
+extern _Bool VerifyEticaRandomXNonce(unsigned char* blockHeader, size_t blockHeaderLength, unsigned char* nonce, size_t nonceLength, unsigned char* target, size_t targetLength, unsigned char* seedHash, size_t seedHashLength, unsigned char* expectedHash, size_t expectedHashLength);
 
 #ifdef __cplusplus
 }

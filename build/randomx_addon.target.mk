@@ -37,17 +37,17 @@ CFLAGS_C_Debug :=
 # Flags passed to only C++ files.
 CFLAGS_CC_Debug := \
 	-fno-rtti \
-	-std=gnu++17
+	-std=gnu++1y
 
 INCS_Debug := \
-	-I/home/ubuntu/.cache/node-gyp/18.19.0/include/node \
-	-I/home/ubuntu/.cache/node-gyp/18.19.0/src \
-	-I/home/ubuntu/.cache/node-gyp/18.19.0/deps/openssl/config \
-	-I/home/ubuntu/.cache/node-gyp/18.19.0/deps/openssl/openssl/include \
-	-I/home/ubuntu/.cache/node-gyp/18.19.0/deps/uv/include \
-	-I/home/ubuntu/.cache/node-gyp/18.19.0/deps/zlib \
-	-I/home/ubuntu/.cache/node-gyp/18.19.0/deps/v8/include \
-	-I/mnt/c/users/kevin/Documents/eti/apps/etica-public-repository/randomX-nodejs/node_modules/node-addon-api \
+	-I/root/.cache/node-gyp/16.0.0/include/node \
+	-I/root/.cache/node-gyp/16.0.0/src \
+	-I/root/.cache/node-gyp/16.0.0/deps/openssl/config \
+	-I/root/.cache/node-gyp/16.0.0/deps/openssl/openssl/include \
+	-I/root/.cache/node-gyp/16.0.0/deps/uv/include \
+	-I/root/.cache/node-gyp/16.0.0/deps/zlib \
+	-I/root/.cache/node-gyp/16.0.0/deps/v8/include \
+	-I/root/Etica/randomx-etica-nodejs/randomx-etica-nodejs/node_modules/node-addon-api \
 	-I$(srcdir)/src
 
 DEFS_Release := \
@@ -82,17 +82,17 @@ CFLAGS_C_Release :=
 # Flags passed to only C++ files.
 CFLAGS_CC_Release := \
 	-fno-rtti \
-	-std=gnu++17
+	-std=gnu++1y
 
 INCS_Release := \
-	-I/home/ubuntu/.cache/node-gyp/18.19.0/include/node \
-	-I/home/ubuntu/.cache/node-gyp/18.19.0/src \
-	-I/home/ubuntu/.cache/node-gyp/18.19.0/deps/openssl/config \
-	-I/home/ubuntu/.cache/node-gyp/18.19.0/deps/openssl/openssl/include \
-	-I/home/ubuntu/.cache/node-gyp/18.19.0/deps/uv/include \
-	-I/home/ubuntu/.cache/node-gyp/18.19.0/deps/zlib \
-	-I/home/ubuntu/.cache/node-gyp/18.19.0/deps/v8/include \
-	-I/mnt/c/users/kevin/Documents/eti/apps/etica-public-repository/randomX-nodejs/node_modules/node-addon-api \
+	-I/root/.cache/node-gyp/16.0.0/include/node \
+	-I/root/.cache/node-gyp/16.0.0/src \
+	-I/root/.cache/node-gyp/16.0.0/deps/openssl/config \
+	-I/root/.cache/node-gyp/16.0.0/deps/openssl/openssl/include \
+	-I/root/.cache/node-gyp/16.0.0/deps/uv/include \
+	-I/root/.cache/node-gyp/16.0.0/deps/zlib \
+	-I/root/.cache/node-gyp/16.0.0/deps/v8/include \
+	-I/root/Etica/randomx-etica-nodejs/randomx-etica-nodejs/node_modules/node-addon-api \
 	-I$(srcdir)/src
 
 OBJS := \
@@ -137,8 +137,8 @@ LDFLAGS_Release := \
 
 LIBS := \
 	-Wl,-rpath,'$$ORIGIN:$$ORIGIN/src' \
-	/mnt/c/users/kevin/Documents/eti/apps/etica-public-repository/randomX-nodejs/src/librandomx_wrapper.so \
-	/mnt/c/users/kevin/Documents/eti/apps/etica-public-repository/randomX-nodejs/src/lib/librandomx.a \
+	/root/Etica/randomx-etica-nodejs/randomx-etica-nodejs/src/librandomx_wrapper.so \
+	/root/Etica/randomx-etica-nodejs/randomx-etica-nodejs/src/lib/librandomx.a \
 	-lstdc++
 
 $(obj).target/randomx_addon.node: GYP_LDFLAGS := $(LDFLAGS_$(BUILDTYPE))
