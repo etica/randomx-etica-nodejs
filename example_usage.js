@@ -8,7 +8,7 @@ const key = Buffer.from("0410591dc8b3bba89f949212982f05deeb4a1947e939c62679dfc76
 randomxChecker.InitRandomX(key);
 
 // Convert the nonce to the correct format
-const nonce = new BigNumber("65536");
+const nonce = new BigNumber("4069499503");
 const nonceHex = nonce.toString(16).padStart(8, '0');
 const nonceBuffer = Buffer.from(nonceHex, 'hex').reverse(); // Reverse to get little-endian format
 
@@ -16,10 +16,10 @@ console.log("Nonce (hex, big-endian):", nonceHex);
 console.log("Nonce (hex, little-endian):", nonceBuffer.toString('hex'));
 
 // Seed hash
-const seedHash = "25314901c96d26ff28484bddf315f0a3295f30f13590d056efd65fcb6d8da788";
+const seedHash = "6c04e936f063050f70b86c024b637335dd48c98bd47803a880e2f3bbdaf09642";
 
 // Example usage
-const blockHeader1 = "101096a5a1b4061274d1d8e13640eff7416062d3366960171731b703b31244d20c252d090c9d97000000008f3f41a03692ea66f71676a3eae82c215be3347b447fd2545b0cfd2c7b850ad837";
+const blockHeader1 = "76a3143aab91330383ba1a1ce4f95f326e865146748035f5599e5e6ad163d04dae998839f7b398bb08b36f90d0246a64b0b8ac8376b55e060e8595c1d29556604c2b029812d3b55f4ff84baac290384b";
 const nonce1 = "bf26f10a47750521";
 const target1 = "00000000ffff0000000000000000000000000000000000000000000000000000";
 
@@ -29,7 +29,7 @@ console.log(`Solution is ${isValid1 ? 'valid' : 'invalid'}`);
 console.log('---------- starting Test 2 -------------');
 
 // New values
-const blockHeader = "101096a5a1b4061274d1d8e13640eff7416062d3366960171731b703b31244d20c252d090c9d97000000008f3f41a03692ea66f71676a3eae82c215be3347b447fd2545b0cfd2c7b850ad837";
+const blockHeader = "76a3143aab91330383ba1a1ce4f95f326e865146748035f5599e5e6ad163d04dae998839f7b398bb08b36f90d0246a64b0b8ac8376b55e060e8595c1d29556604c2b029812d3b55f4ff84baac290384b";
 const target = "ff7fffff00000000000000000000000000000000000000000000000000000000"; //new BigNumber(2).pow(248);
 
 // Convert values to the format expected by VerifyEticaRandomXNonce
