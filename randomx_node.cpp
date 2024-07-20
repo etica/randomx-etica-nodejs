@@ -19,7 +19,8 @@ extern "C" {
     bool VerifyEticaRandomXNonce(const unsigned char* blockHeader, size_t blockHeaderLength,
                                  const unsigned char* nonce, size_t nonceLength,
                                  const unsigned char* target, size_t targetLength,
-                                 const unsigned char* seedHash, size_t seedHashLength);
+                                 const unsigned char* seedHash, size_t seedHashLength,
+                                 const unsigned char* expectedHash, size_t expectedHashLength);
 }
 
 void* randomxCache = nullptr;
@@ -80,13 +81,18 @@ void VerifyEticaRandomXNonce(const FunctionCallbackInfo<Value>& args) {
     char* seedHashData = node::Buffer::Data(seedHashObj);
     size_t seedHashLength = node::Buffer::Length(seedHashObj);
 
+    Local<Object> expectedHashObj = args[4]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
+    char* expectedHashData = node::Buffer::Data(expectedHashObj);
+    size_t expectedHashLength = node::Buffer::Length(expectedHashObj);
+
     bool result = VerifyEticaRandomXNonce(
         reinterpret_cast<const unsigned char*>(blockHeaderData), blockHeaderLength,
         reinterpret_cast<const unsigned char*>(nonceData), nonceLength,
         reinterpret_cast<const unsigned char*>(targetData), targetLength,
-        reinterpret_cast<const unsigned char*>(seedHashData), seedHashLength);
+        reinterpret_cast<const unsigned char*>(seedHashData), seedHashLength,
+        *expectedHash);
 
-    args.GetReturnValue().Set(result);
+    args.GetReturnValue().Set(Boolean::New(isolate, result));
 }
 
 void Initialize(Local<Object> exports) {

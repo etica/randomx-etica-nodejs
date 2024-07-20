@@ -17,13 +17,14 @@ console.log("Nonce (hex, little-endian):", nonceBuffer.toString('hex'));
 
 // Seed hash
 const seedHash = "6c04e936f063050f70b86c024b637335dd48c98bd47803a880e2f3bbdaf09642";
+const expectedHash = "6c04e936f063050f70b86c024b637335dd48c98bd47803a880e2f3bbdaf09642";
 
 // Example usage
 const blockHeader1 = "76a3143aab91330383ba1a1ce4f95f326e865146748035f5599e5e6ad163d04dae998839f7b398bb08b36f90d0246a64b0b8ac8376b55e060e8595c1d29556604c2b029812d3b55f4ff84baac290384b";
 const nonce1 = "bf26f10a47750521";
 const target1 = "00000000ffff0000000000000000000000000000000000000000000000000000";
 
-const isValid1 = randomxChecker.VerifyEticaRandomXNonce(blockHeader1, nonce1, target1, seedHash);
+const isValid1 = randomxChecker.VerifyEticaRandomXNonce(blockHeader1, nonce1, target1, seedHash, expectedHash);
 console.log(`Solution is ${isValid1 ? 'valid' : 'invalid'}`);
 
 console.log('---------- starting Test 2 -------------');
@@ -42,6 +43,6 @@ console.log("Target:", targetBuffer.toString('hex'));
 console.log("Seed Hash:", seedHash);
 
 //const isValid = randomxChecker.VerifyEticaRandomXNonce(blockHeaderBuffer, nonceBuffer, targetBuffer);
-const isValid = randomxChecker.VerifyEticaRandomXNonce(blockHeader, nonceBuffer, targetBuffer, seedHash);
+const isValid = randomxChecker.VerifyEticaRandomXNonce(blockHeader, nonceBuffer, targetBuffer, seedHash, expectedHash);
 console.log('isValid is: ', isValid);
 console.log(`Solution is ${isValid ? 'valid' : 'invalid'}`);

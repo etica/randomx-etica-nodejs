@@ -5,6 +5,7 @@ package main
 #cgo linux LDFLAGS: -L./lib -lrandomx -lstdc++
 #cgo darwin LDFLAGS: -L./lib -lrandomx -lstdc++
 #cgo windows LDFLAGS: -L./lib -lrandomx -lstdc++ -lws2_32 -ladvapi32
+#include <stdlib.h>
 #include <stdbool.h>
 #include "randomx.h"
 */
@@ -27,7 +28,8 @@ const nonceOffset = 39
 func VerifyEticaRandomXNonce(blockHeader *C.uchar, blockHeaderLength C.size_t,
 	nonce *C.uchar, nonceLength C.size_t,
 	target *C.uchar, targetLength C.size_t,
-	seedHash *C.uchar, seedHashLength C.size_t) C.bool {
+	seedHash *C.uchar, seedHashLength C.size_t,
+	expectedHash *C.uchar, expectedHashLength C.size_t) C.bool {
 
 	fmt.Println("*-*-*-*-**-*-*-*-*-*-Verifying with VerifyEticaRandomXNonce *-*-*-*-*-**-*-*-*-*-*-*-*-*-")
 
@@ -36,12 +38,13 @@ func VerifyEticaRandomXNonce(blockHeader *C.uchar, blockHeaderLength C.size_t,
 	goNonce := C.GoBytes(unsafe.Pointer(nonce), C.int(nonceLength))
 	goTarget := C.GoBytes(unsafe.Pointer(target), C.int(targetLength))
 	goSeedHash := C.GoBytes(unsafe.Pointer(seedHash), C.int(seedHashLength))
+	goExpectedHash := C.GoBytes(unsafe.Pointer(expectedHash), C.int(expectedHashLength))
 
 	fmt.Printf("Block Header (hex): %s\n", hex.EncodeToString(goBlockHeader))
 	fmt.Printf("Nonce (hex): %s\n", hex.EncodeToString(goNonce))
 	fmt.Printf("Target (hex): %s\n", hex.EncodeToString(goTarget))
-
 	fmt.Printf("Seed Hash (hex): %s\n", hex.EncodeToString(goSeedHash))
+	fmt.Printf("Expected Hash (hex): %s\n", hex.EncodeToString(goExpectedHash))
 
 	// Create a copy of the block header and insert the nonce at the correct offset
 	blobWithNonce := make([]byte, len(goBlockHeader))
@@ -75,6 +78,11 @@ func VerifyEticaRandomXNonce(blockHeader *C.uchar, blockHeaderLength C.size_t,
 
 	calculatedHash := calculateRandomXHash(blobWithNonce, goSeedHash)
 	fmt.Printf("Calculated RandomX Hash (hex): %s\n", hex.EncodeToString(calculatedHash))
+
+	if !bytes.Equal(calculatedHash, goExpectedHash) {
+		fmt.Printf("calculated hash does not match expected hash\n")
+		return C.bool(false)
+	}
 
 	valid, err := CheckSolutionWithTarget(vm, blobWithNonce, calculatedHash, goTarget)
 	if err != nil {
