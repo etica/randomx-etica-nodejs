@@ -90,7 +90,7 @@ void VerifyEticaRandomXNonce(const FunctionCallbackInfo<Value>& args) {
         reinterpret_cast<const unsigned char*>(nonceData), nonceLength,
         reinterpret_cast<const unsigned char*>(targetData), targetLength,
         reinterpret_cast<const unsigned char*>(seedHashData), seedHashLength,
-        *expectedHash);
+        reinterpret_cast<const unsigned char*>(expectedHashData), expectedHashLength);
 
     args.GetReturnValue().Set(Boolean::New(isolate, result));
 }
