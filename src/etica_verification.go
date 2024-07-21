@@ -126,11 +126,27 @@ func CheckSolutionWithTarget(vm unsafe.Pointer, blobWithNonce []byte, calculated
 		return false, errors.New("RandomX VM is not initialized")
 	}
 
-	if bytes.Compare(calculatedHash, target) > 0 {
+	// Log original calculatedHash
+	fmt.Printf("Calculated RandomX Hash (original): %s\n", hex.EncodeToString(calculatedHash))
+
+	// Reverse the calculatedHash
+	reversedHash := reverseBytes(calculatedHash)
+	fmt.Printf("Calculated RandomX Hash (reversed for diff checking): %s\n", hex.EncodeToString(reversedHash))
+
+	if bytes.Compare(reversedHash, target) > 0 {
+		fmt.Println("Hash does not meet target difficulty (reversedHash)")
 		return false, errors.New("hash does not meet target difficulty")
 	}
 
 	return true, nil
+}
+
+func reverseBytes(data []byte) []byte {
+	reversed := make([]byte, len(data))
+	for i := range data {
+		reversed[i] = data[len(data)-1-i]
+	}
+	return reversed
 }
 
 /* func CheckSolutionWithTarget(vm unsafe.Pointer, blockHeader []byte, nonce []byte, solution []byte, target []byte) (bool, error) {
