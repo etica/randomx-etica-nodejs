@@ -71,3 +71,11 @@ console.log(`Solution is ${isValid3 ? 'valid' : 'invalid'}`);
 
 console.log('------------------------------------------   TEST 3    ---------------------------------------------------------------------------------------');
 console.log('-------------------------------------------- ended Test 3  (should be invalid)------------------------------------------------------');
+
+if(isValid && !isValid2 && !isValid3){
+      console.log('- - - -  - - - - -  -  - - -  - - - - -  - SUCCESSFUL TESTS --  - -  -  - - -  - - - - -  - - - - - - -  - - - - - - -');
+}
+
+else {
+    console.log('- - - -  - - - - -  -  - - -  - - - - -  -  AT LEAST ONE TEST HAS FAILED --  - -  -  - - -  - - - - -  - - - - - - -  - - - - - - -');
+}
