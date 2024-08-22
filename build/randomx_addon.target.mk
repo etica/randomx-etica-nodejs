@@ -9,7 +9,6 @@ DEFS_Debug := \
 	'-DV8_DEPRECATION_WARNINGS=1' \
 	'-DV8_DEPRECATION_WARNINGS' \
 	'-DV8_IMMINENT_DEPRECATION_WARNINGS' \
-	'-D_GLIBCXX_USE_CXX11_ABI=1' \
 	'-D_LARGEFILE_SOURCE' \
 	'-D_FILE_OFFSET_BITS=64' \
 	'-D__STDC_FORMAT_MACROS' \
@@ -40,14 +39,14 @@ CFLAGS_CC_Debug := \
 	-std=gnu++1y
 
 INCS_Debug := \
-	-I/root/.cache/node-gyp/16.0.0/include/node \
-	-I/root/.cache/node-gyp/16.0.0/src \
-	-I/root/.cache/node-gyp/16.0.0/deps/openssl/config \
-	-I/root/.cache/node-gyp/16.0.0/deps/openssl/openssl/include \
-	-I/root/.cache/node-gyp/16.0.0/deps/uv/include \
-	-I/root/.cache/node-gyp/16.0.0/deps/zlib \
-	-I/root/.cache/node-gyp/16.0.0/deps/v8/include \
-	-I/root/Etica/randomx-etica-nodejs/randomx-etica-nodejs/node_modules/node-addon-api \
+	-I/home/kw/.cache/node-gyp/14.21.3/include/node \
+	-I/home/kw/.cache/node-gyp/14.21.3/src \
+	-I/home/kw/.cache/node-gyp/14.21.3/deps/openssl/config \
+	-I/home/kw/.cache/node-gyp/14.21.3/deps/openssl/openssl/include \
+	-I/home/kw/.cache/node-gyp/14.21.3/deps/uv/include \
+	-I/home/kw/.cache/node-gyp/14.21.3/deps/zlib \
+	-I/home/kw/.cache/node-gyp/14.21.3/deps/v8/include \
+	-I/mnt/c/users/kevin/Documents/eti/apps/etica-public-repository/randomX-nodejs/node_modules/node-addon-api \
 	-I$(srcdir)/src
 
 DEFS_Release := \
@@ -57,7 +56,6 @@ DEFS_Release := \
 	'-DV8_DEPRECATION_WARNINGS=1' \
 	'-DV8_DEPRECATION_WARNINGS' \
 	'-DV8_IMMINENT_DEPRECATION_WARNINGS' \
-	'-D_GLIBCXX_USE_CXX11_ABI=1' \
 	'-D_LARGEFILE_SOURCE' \
 	'-D_FILE_OFFSET_BITS=64' \
 	'-D__STDC_FORMAT_MACROS' \
@@ -85,14 +83,14 @@ CFLAGS_CC_Release := \
 	-std=gnu++1y
 
 INCS_Release := \
-	-I/root/.cache/node-gyp/16.0.0/include/node \
-	-I/root/.cache/node-gyp/16.0.0/src \
-	-I/root/.cache/node-gyp/16.0.0/deps/openssl/config \
-	-I/root/.cache/node-gyp/16.0.0/deps/openssl/openssl/include \
-	-I/root/.cache/node-gyp/16.0.0/deps/uv/include \
-	-I/root/.cache/node-gyp/16.0.0/deps/zlib \
-	-I/root/.cache/node-gyp/16.0.0/deps/v8/include \
-	-I/root/Etica/randomx-etica-nodejs/randomx-etica-nodejs/node_modules/node-addon-api \
+	-I/home/kw/.cache/node-gyp/14.21.3/include/node \
+	-I/home/kw/.cache/node-gyp/14.21.3/src \
+	-I/home/kw/.cache/node-gyp/14.21.3/deps/openssl/config \
+	-I/home/kw/.cache/node-gyp/14.21.3/deps/openssl/openssl/include \
+	-I/home/kw/.cache/node-gyp/14.21.3/deps/uv/include \
+	-I/home/kw/.cache/node-gyp/14.21.3/deps/zlib \
+	-I/home/kw/.cache/node-gyp/14.21.3/deps/v8/include \
+	-I/mnt/c/users/kevin/Documents/eti/apps/etica-public-repository/randomX-nodejs/node_modules/node-addon-api \
 	-I$(srcdir)/src
 
 OBJS := \
@@ -137,8 +135,8 @@ LDFLAGS_Release := \
 
 LIBS := \
 	-Wl,-rpath,'$$ORIGIN:$$ORIGIN/src' \
-	/root/Etica/randomx-etica-nodejs/randomx-etica-nodejs/src/librandomx_wrapper.so \
-	/root/Etica/randomx-etica-nodejs/randomx-etica-nodejs/src/lib/librandomx.a \
+	/mnt/c/users/kevin/Documents/eti/apps/etica-public-repository/randomX-nodejs/src/librandomx_wrapper.so \
+	/mnt/c/users/kevin/Documents/eti/apps/etica-public-repository/randomX-nodejs/src/lib/librandomx.a \
 	-lstdc++
 
 $(obj).target/randomx_addon.node: GYP_LDFLAGS := $(LDFLAGS_$(BUILDTYPE))
