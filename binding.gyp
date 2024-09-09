@@ -37,8 +37,8 @@
         }],
         ['OS=="win"', {
           "libraries": [
-            "<!(pwd)/src/librandomx_wrapper.dll",
-            "<!(pwd)/src/lib/randomx.lib",
+            "<!(echo %cd%)/src/librandomx_wrapper.dll",
+            "<!(echo %cd%)/src/lib/randomx.lib",
             "ws2_32.lib",
             "advapi32.lib"
           ]
