@@ -12,7 +12,6 @@ package main
 import "C"
 import (
 	"bytes"
-	"encoding/hex"
 	"errors"
 	"fmt"
 	"unsafe"
@@ -35,8 +34,6 @@ func VerifyEticaRandomXNonce(blockHeader *C.uchar, blockHeaderLength C.size_t,
 	seedHash *C.uchar, seedHashLength C.size_t,
 	expectedHash *C.uchar, expectedHashLength C.size_t) C.bool {
 
-	fmt.Println("*-*-*-*-**-*-*-*-*-*-Verifying with VerifyEticaRandomXNonce *-*-*-*-*-**-*-*-*-*-*-*-*-*-")
-
 	// Convert C types to Go slices
 	goBlockHeader := C.GoBytes(unsafe.Pointer(blockHeader), C.int(blockHeaderLength))
 	goNonce := C.GoBytes(unsafe.Pointer(nonce), C.int(nonceLength))
@@ -46,7 +43,7 @@ func VerifyEticaRandomXNonce(blockHeader *C.uchar, blockHeaderLength C.size_t,
 
 	// Initialize RandomX system if needed
 	if globalRandomXCache == nil || globalRandomXVM == nil || !bytes.Equal(globalSeedHash, goSeedHash) {
-		fmt.Println("!!!!!!!!!!!!!!!!!!!!!!! Initializing RandomX system due to missing or outdated cache/VM. !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+
 		if err := initRandomXSystem(FlagDefault, goSeedHash); err != nil {
 			fmt.Printf("Error initializing RandomX system: %v\n", err)
 			return C.bool(false)
@@ -54,20 +51,10 @@ func VerifyEticaRandomXNonce(blockHeader *C.uchar, blockHeaderLength C.size_t,
 		globalSeedHash = goSeedHash // Update the global seedHash
 	}
 
-	fmt.Printf("Block Header (hex): %s\n", hex.EncodeToString(goBlockHeader))
-	fmt.Printf("Nonce (hex): %s\n", hex.EncodeToString(goNonce))
-	fmt.Printf("Target (hex): %s\n", hex.EncodeToString(goTarget))
-	fmt.Printf("Seed Hash (hex): %s\n", hex.EncodeToString(goSeedHash))
-	fmt.Printf("Expected Hash (hex): %s\n", hex.EncodeToString(goExpectedHash))
-
 	// Create a copy of the block header and insert the nonce at the correct offset
 	blobWithNonce := make([]byte, len(goBlockHeader))
 	copy(blobWithNonce, goBlockHeader)
 	copy(blobWithNonce[nonceOffset:nonceOffset+4], goNonce)
-
-	// Log the original blob and the blob with the new nonce
-	fmt.Printf("Original Blob: %s\n", hex.EncodeToString(goBlockHeader))
-	fmt.Printf("Blob with Nonce: %s\n", hex.EncodeToString(blobWithNonce))
 
 	const maxInputSize = 1024 * 1024 // 1 MB, adjust as needed
 	if len(blobWithNonce) > maxInputSize {
@@ -76,7 +63,6 @@ func VerifyEticaRandomXNonce(blockHeader *C.uchar, blockHeaderLength C.size_t,
 	}
 
 	calculatedHash := calculateRandomXHash(globalRandomXVM, blobWithNonce, goSeedHash)
-	fmt.Printf("Calculated RandomX Hash (hex): %s\n", hex.EncodeToString(calculatedHash))
 
 	if !bytes.Equal(calculatedHash, goExpectedHash) {
 		fmt.Printf("calculated hash does not match expected hash\n")
@@ -90,7 +76,6 @@ func VerifyEticaRandomXNonce(blockHeader *C.uchar, blockHeaderLength C.size_t,
 	}
 
 	if valid {
-		fmt.Println("------***----------- RandomX verification passed -----------***-------")
 		return C.bool(true)
 	} else {
 		fmt.Println("RandomX verification failed")
@@ -115,12 +100,8 @@ func CheckSolutionWithTarget(vm unsafe.Pointer, blobWithNonce []byte, calculated
 		return false, errors.New("RandomX VM is not initialized")
 	}
 
-	// Log original calculatedHash
-	fmt.Printf("Calculated RandomX Hash (original): %s\n", hex.EncodeToString(calculatedHash))
-
 	// Reverse the calculatedHash
 	reversedHash := reverseBytes(calculatedHash)
-	fmt.Printf("Calculated RandomX Hash (reversed for diff checking): %s\n", hex.EncodeToString(reversedHash))
 
 	if bytes.Compare(reversedHash, target) > 0 {
 		fmt.Println("Hash does not meet target difficulty (reversedHash)")
@@ -141,12 +122,10 @@ func reverseBytes(data []byte) []byte {
 func initRandomXSystem(flags RandomXFlags, seedHash []byte) error {
 
 	if globalRandomXVM != nil {
-		fmt.Printf("*999-*-*999*-**-*999*- ----- globalRandomXVM empty calling -------- DestroyVM ---------- *999-*-*999*-**-*999* *-*-*-*-*-*-**-*")
 		DestroyVM(globalRandomXVM)
 		globalRandomXVM = nil
 	}
 	if globalRandomXCache != nil {
-		fmt.Printf("*999-*-*999*-**-*999*- ----- globalRandomXCache empty calling -------- DestroyRandomX ---------- *999-*-*999*-**-*999* *-*-*-*-*-*-**-*")
 		DestroyRandomX(globalRandomXCache)
 		globalRandomXCache = nil
 	}
@@ -155,18 +134,14 @@ func initRandomXSystem(flags RandomXFlags, seedHash []byte) error {
 	globalRandomXCache = InitRandomX(flags)
 
 	if globalRandomXCache == nil {
-		fmt.Printf("*999-*-*999*-**-*999*- ----- InitRandomX error failed to allocate RandomX cache --- *999-*-*999*-**-*999* *-*-*-*-*-*-**-*")
 		return fmt.Errorf("failed to allocate RandomX cache")
 	}
 	InitCache(globalRandomXCache, seedHash)
 
 	globalRandomXVM = CreateVM(globalRandomXCache, flags)
 	if globalRandomXVM == nil {
-		fmt.Printf("*999-*-*999*-**-*999*- ----- InitRandomX error failed to create RandomX VM --- *999-*-*999*-**-*999* *-*-*-*-*-*-**-*")
 		return fmt.Errorf("failed to create RandomX VM")
 	}
-
-	fmt.Printf("*-*-** 999999999 -**-*-*- ------------- initRandomXSystem() SUCCESS ---------- *-*-*-*999999999999 *-*-**-*")
 
 	return nil
 }

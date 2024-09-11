@@ -28,7 +28,7 @@ void* randomxCache = nullptr;
 void* randomxVM = nullptr;
 
 void NodeInitRandomX(const FunctionCallbackInfo<Value>& args) {
-    printf("NodeInitRandomX called\n");
+
     Isolate* isolate = args.GetIsolate();
 
     if (args.Length() < 1 || !node::Buffer::HasInstance(args[0])) {
@@ -49,7 +49,6 @@ void NodeInitRandomX(const FunctionCallbackInfo<Value>& args) {
     } else {
         // Here you might want to create the VM if needed
         // randomxVM = CreateVM(randomxCache);
-        printf("InitRandomX succeeded\n");
         args.GetReturnValue().Set(true);
     }
 }
